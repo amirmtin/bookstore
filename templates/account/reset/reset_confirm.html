@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}
+	done
+{% endblock title %}
+{% block content %}
+	<form method="post">
+		{% csrf_token %}
+		<label for="id_new_password1">New password:</label>
+		<input type="password" name="new_password1" maxlength="150" autofocus="" required="" id="id_new_password1">
+
+		<br>
+		<label for="id_new_password2">Confirm password:</label>
+		<input type="password" name="new_password2" maxlength="150" required="" id="id_new_password2">
+
+		<br>
+		<button type="submit">reset</button>
+	</form>
+{% endblock content %}

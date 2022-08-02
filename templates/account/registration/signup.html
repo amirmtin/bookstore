@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}
+    sign up
+{% endblock title %}
+
+{% block content %}
+    <div>
+        {{ form.errors }}
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        <label for="id_username">Username:</label>
+        <input type="text" name="username" maxlength="150" autofocus="" required="" id="id_username">
+        <br>
+        <span class="helptext">Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</span>
+        <br><br>
+
+        <label for="id_password1">Password:</label>
+        <input type="password" name="password1" autocomplete="new-password" required="" id="id_password1">
+        <br>
+        <ul>
+            <li>Your password can’t be too similar to your other personal information.</li>
+            <li>Your password must contain at least 8 characters.</li>
+            <li>Your password can’t be a commonly used password.</li>
+            <li>Your password can’t be entirely numeric.</li>
+        </ul>
+        <br><br>
+
+        <label for="id_password2">Password confirmation:</label>
+        <input type="password" name="password2" autocomplete="new-password" required="" id="id_password2">
+        <br>
+        <span class="helptext">Enter the same password as before, for verification.</span>
+        <br><br>
+
+        <label for="id_email">Email:</label>
+        <input type="email" name="email" maxlength="254" required="" id="id_email">
+        <br><br>
+
+        <button class="btn btn-dark" type="submit">sign up</button>
+    </form>
+    <br>
+    <a href="{% url 'account:login' %}">already have an account?</a>
+{% endblock content %}

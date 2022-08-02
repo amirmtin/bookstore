@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}
+	complete
+{% endblock title %}
+{% block content %}
+	<h1>
+		Password has been reset successfully.
+	</h1>
+	<a href="{% url 'account:login' %}">Go to login page</a>
+{% endblock content %}

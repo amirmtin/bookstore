@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}
+	dashboard
+{% endblock title %}
+
+{% block content %}
+	<span>
+		{{ request.user }}
+	</span>
+	<br>
+	<a href="{% url 'account:logout' %}">logout</a>
+{% endblock content %}

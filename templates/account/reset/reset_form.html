@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}
+	Reset password
+{% endblock title %}
+{% block content %}
+	<div>
+		{{ form.errors }}
+	</div>
+	<form method="post">
+		{% csrf_token %}
+		<label for="id_email">Email:</label>
+		<input type="email" name="email" autocomplete="email" maxlength="254" required="" id="id_email">
+		<br><br>
+		<button class="btn btn-dark" type="submit">reset password</button>
+	</form>
+{% endblock content %}

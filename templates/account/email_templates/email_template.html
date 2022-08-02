@@ -1,0 +1,5 @@
+{% autoescape off %}
+Hi ,
+Please open the link below to verify your email
+http://{{ domain }}{% url 'account:verify' uidb64=uid token=token %}
+{% endautoescape %}

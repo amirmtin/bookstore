@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}
+    email has been verified
+{% endblock title %}
+{% block content %}
+    <h1>
+        your email has been verified
+    </h1>
+    <a href="{% url 'account:login' %}">go to login page</a>
+{% endblock content %}
