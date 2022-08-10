@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+	cart
+{% endblock title %}
+
+{% block content %}
+	{% if orders %}
+		<div class="row">
+			<div class="col">
+				<strong>book title</strong>
+			</div>
+			<div class="col">
+				<strong>quantity</strong>
+			</div>
+			<div class="col">
+				<strong>book price</strong>
+			</div>
+			<div class="col">
+				<strong>total price</strong>
+			</div>
+			<div class="col">
+				<strong>actions</strong>
+			</div>
+		</div>
+		<br><br>
+	{% endif  %}
+	{% for order in orders %}
+		<div class="row">
+			<div class="col">
+				{{ order.book.title }}
+			</div>
+			<div class="col">
+				{{ order.quantity }}
+			</div>
+			<div class="col">
+				{{ order.book.price }}
+			</div>
+			<div class="col">
+				{{ order.get_total }}
+			</div>
+			<div class="col">
+				<button class="btn btn-primary">+1</button>
+				<button class="btn btn-primary">delete</button>
+				<button class="btn btn-primary">-1</button>
+			</div>
+		</div>
+		<hr>
+	{% empty %}
+		<h1>your cart is empty</h1>
+		<h2><a href="{% url 'store:list' %}">go shopping</a></h2>
+	{% endfor %}
+
+	{% if orders %}
+		<h3>Total price : {{ orders.0.cart.get_cart_total }}</h3>
+
+		<a class="btn btn-primary" href="#">check out</a>
+	{% endif  %}
+{% endblock content %}
+

@@ -38,8 +38,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # packages
+    'django_extensions',
+    'rest_framework',
+
     # local
     'account',
+    'store',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -119,6 +125,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    BASE_DIR / 'static'
+]
+
+MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL  = 'media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -134,4 +146,3 @@ EMAIL_HOST_USER = 'amirmatinrousta@gmail.com'
 EMAIL_HOST_PASSWORD = 'ggzxbrmyplzglxju'
 
 LOGIN_URL = 'account:login'
-# LOGOUT_REDIRECT_URL = 'account:login'

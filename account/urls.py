@@ -17,6 +17,11 @@ urlpatterns = [
         name='verify'
     ),
     path(
+        route='send_email/', 
+        view=views.ActiveEmailView.as_view(), 
+        name='send_email'
+    ),
+    path(
         route='login/', 
         view=views.UserLoginView.as_view(), 
         name='login'

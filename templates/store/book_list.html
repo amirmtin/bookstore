@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+	{{ block.super }}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/category.css' %}">
+{% endblock css %}
+
+{% block title %}
+	book list
+{% endblock title %}
+
+{% block content %}
+	{% include 'partials/category.html' with catg=catg %}
+	<div class="row">
+		{% for book in books %}
+			<div class="col">
+				<div class="card m-5" style="width: 18rem;">
+  					<img src="{{ book.picture.url }}" class="card-img-top" alt="{{ book.title }}">
+  					<div class="card-body">
+    					<ul class="list-group list-group-flush">
+    						<li class="list-group-item"><strong>{{ book.title }}</strong></li>
+    						<li class="list-group-item">{{ book.publisher }}</li>
+    						<li class="list-group-item">{{ book.price }}$</li>
+  						</ul>
+    					<p class="card-text">
+    						<em>{{ book.description }}</em>
+    					</p>
+    					<a href="{% url 'store:detail' book.slug %}" class="btn btn-primary">see details</a>
+  					</div>
+				</div>
+			</div>
+	{% endfor %}
+	</div>
+	{% include 'partials/pagination.html' with page=page %}
+{% endblock content %}

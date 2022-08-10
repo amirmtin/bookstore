@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+	{{ block.super }}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/category.css' %}">
+{% endblock css %}
+
+{% block title %}
+	{{ book.title }}
+{% endblock title %}
+
+{% block content %}
+	{% include 'partials/category.html' with catg=catg %}
+	<div class="row">
+		<div class="col">
+			<img class="detail-img" src="{{ book.picture.url }}" alt="{{ book.title }}">
+		</div>
+		<div class="col">
+			{{ book.title }}
+			<br>
+			{{ book.publisher }}
+			<br>
+			{{ book.writer }}
+			<br>
+			{{ book.price }}
+			<br>
+			{{ book.category }}
+			<br>
+			{{ book.pages }}
+			<br>
+			{{ book.year }}
+			<br>
+			{{ book.edition }}
+			<br>
+			{{ book.description }}
+			<br>
+			<br>
+			{% if request.user.is_verified %}
+				<button book="{{ book.slug }}" class="btn btn-primary" id="addBtn">add to cart</button>
+
+				<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+				  <div class="modal-dialog">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <h5 class="modal-title" id="ModalLabel">successfull</h5>
+				        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				      </div>
+				      <div class="modal-body">
+				        <em>{{ book.title }}</em> is added to your card
+				      </div>
+				      <div class="modal-footer">
+				        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				        <a href="{% url 'store:cart' %}" class="btn btn-primary">go to cart</a>
+				      </div>
+				    </div>
+				  </div>
+				</div>
+
+			{% elif request.user.is_authenticated %}
+				<a href="{% url 'account:send_email' %}">activate your email</a> to add book to your cart
+			{% else %}
+				<a href="{% url 'account:login' %}">login</a>
+				/
+				<a href="{% url 'account:signup' %}">signup</a>
+				to add book to your cart
+			{% endif %}
+		</div>
+	</div>
+
+{% endblock content %}
+
+{% block scripts %}
+	{{ block.super }}
+	<script type="text/javascript" src="{% static 'js/cart.js' %}"></script>
+{% endblock scripts %}

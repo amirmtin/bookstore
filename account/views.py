@@ -19,6 +19,25 @@ from .forms import SignUpForm
 from .utils import send_verification_mail
 from .tokens import account_activation_token
 
+class ActiveEmailView(LoginRequiredMixin, TemplateView):
+	def get(self, *args, **kwargs):
+		user = self.request.user
+		if not user.is_verified:
+			current_site = get_current_site(self.request)
+			success = send_verification_mail(user, current_site, user.email)
+			if success:
+				message = 'email sent successfully.Open the link sent to your email.'
+			else:
+				message = 'email not sent.Please check your email or try again later'
+		else:
+			message = 'your email is already verified.'
+
+		return render(
+			request=self.request,
+			template_name='account/registration/email_sent.html',
+			context={'message': message}
+			)
+
 class UserLoginView(AnonymousRequiredMixin, LoginView):
 	template_name = 'account/registration/login.html'
 	authenticated_redirect_url = reverse_lazy("account:dashboard")
