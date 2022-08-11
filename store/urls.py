@@ -20,4 +20,9 @@ urlpatterns = [
 		view=views.CartView.as_view(),
 		name='cart'
 		),
+	path(
+		route='checkout/',
+		view=views.CheckOutView.as_view(),
+		name='checkout'
+		),
 ]

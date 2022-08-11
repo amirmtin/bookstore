@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+	checkout
+{% endblock title %}
+
+{% block content %}
+	<form method="post">
+		{% csrf_token %}
+		<label for="id_address">Address:</label>
+		<input type="text" name="address" required="" id="id_address">
+		{{ form.address.errors }}
+
+		<br><br>
+
+		<label for="id_phone">Phone:</label>
+		<input type="text" name="phone" required="" id="id_phone">
+		{{ form.phone.errors }}
+
+		<br><br>
+		<button class="btn btn-primary" type="submit">checkout</button>	
+	</form>
+{% endblock content %}

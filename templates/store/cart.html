@@ -41,9 +41,9 @@
 				{{ order.get_total }}
 			</div>
 			<div class="col">
-				<button class="btn btn-primary">+1</button>
-				<button class="btn btn-primary">delete</button>
-				<button class="btn btn-primary">-1</button>
+				<button book="{{ order.book.slug }}" class="btn btn-primary increaseButton">+1</button>
+				<button book="{{ order.book.slug }}" class="btn btn-primary deleteButton">delete</button>
+				<button book="{{ order.book.slug }}" class="btn btn-primary decreaseButton">-1</button>
 			</div>
 		</div>
 		<hr>
@@ -53,9 +53,15 @@
 	{% endfor %}
 
 	{% if orders %}
+		<a href="{% url 'store:list' %}">continue shopping</a>
+		<br>
 		<h3>Total price : {{ orders.0.cart.get_cart_total }}</h3>
 
-		<a class="btn btn-primary" href="#">check out</a>
+		<a class="btn btn-primary" href="{% url 'store:checkout' %}">check out</a>
 	{% endif  %}
 {% endblock content %}
 
+{% block scripts %}
+	{{ block.super }}
+	<script type="text/javascript" src="{% static 'js/cart.js' %}"></script>
+{% endblock scripts %}

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+	order complete
+{% endblock title %}
+{% block content %}
+	<h1>order is complete and sending</h1>
+	<a href="{% url 'store:list' %}">
+		Go shopping
+	</a>
+{% endblock content %}
