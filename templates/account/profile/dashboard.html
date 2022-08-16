@@ -4,9 +4,41 @@
 {% endblock title %}
 
 {% block content %}
-	<span>
-		{{ request.user }}
-	</span>
-	<br>
-	<a href="{% url 'account:logout' %}">logout</a>
+	<div class="row justify-content-center mt-5">
+		<div class="col-lg-4 col-md-6 col-sm-6">
+			<div class="card shadow">
+				<div class="card-title text-center border-bottom">
+            		<h2 class="p-3">hello welcome {{ request.user  }}</h2>
+         		</div>
+         		<div class="card-body">
+
+         			<div class="mb-5">
+	         			{% if messages %}
+
+						    {% for message in messages %}
+						    <div class="alert alert-{{ message.tags }} mb-4">
+						        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+						        {{ message }}
+						    </div>
+						    {% endfor %}
+
+						{% endif %}
+         			</div>
+
+         			<div class="mb-5">
+         				<a href="{% url 'store:cart' %}">see your cart</a>
+         			</div>
+         			<div class="mb-5">
+         				<a href="{% url 'store:list' %}">go shopping</a>
+         			</div>
+         			<div class="mb-5">
+         				<a href="{% url 'account:edit' %}">change your shipping info</a>
+         			</div>
+         			<div class="mb-5">
+         				<a href="{% url 'account:logout' %}">log out</a>
+         			</div>
+         		</div>
+			</div>
+		</div>
+	</div>
 {% endblock content %}

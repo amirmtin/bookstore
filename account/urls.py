@@ -37,6 +37,11 @@ urlpatterns = [
         view=views.UserDashboardView.as_view(), 
         name='dashboard'
     ),
+    path(
+        route='edit/', 
+        view=views.EditInfoView.as_view(), 
+        name='edit'
+    ),
     # reset password
     path(
         route='reset/', 

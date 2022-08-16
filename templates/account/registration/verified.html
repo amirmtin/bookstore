@@ -3,8 +3,10 @@
     email has been verified
 {% endblock title %}
 {% block content %}
-    <h1>
-        your email has been verified
-    </h1>
+    <div class="alert alert-success" role="alert">
+        <h1>
+            your email has been verified
+        </h1>
+    </div>
     <a href="{% url 'account:login' %}">go to login page</a>
 {% endblock content %}

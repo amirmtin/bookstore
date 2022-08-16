@@ -46,7 +46,7 @@ class CartView(LoginRequiredMixin, ListView):
 	
 	def get_queryset(self):
 		cart, created = Cart.objects.get_or_create(customer=self.request.user, complete=False)
-		orders = OrderItem.objects.filter(cart=cart)
+		orders = OrderItem.objects.filter(cart=cart).select_related('book')
 
 		return orders
 

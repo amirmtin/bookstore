@@ -18,6 +18,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import SignUpForm
 from .utils import send_verification_mail
 from .tokens import account_activation_token
+from store.forms import CheckOutForm
+from django.contrib import messages
 
 class ActiveEmailView(LoginRequiredMixin, TemplateView):
 	def get(self, *args, **kwargs):
@@ -118,6 +120,33 @@ class VerifyEmailView(View):
             return render(request=self.request, template_name='account/registration/verified.html')
         else:
             return render(request=self.request, template_name='account/registration/invalid.html')
+
+class EditInfoView(LoginRequiredMixin, TemplateView):
+	def get(self, *args, **kwargs):
+		form = CheckOutForm()
+		return render(self.request, 'account/profile/edit_info.html', {'form': form})
+
+	def post(self, *args, **kwargs):
+		user = self.request.user 
+
+		if not user.is_verified:
+			return redirect('account:send_email')
+
+		form = CheckOutForm(self.request.POST) 
+
+		if form.is_valid():
+			address = form.cleaned_data.get('address')
+			phone   = form.cleaned_data.get('phone')
+
+			user.address = address
+			user.phone   = phone
+			user.save()
+
+			messages.success(self.request, 'Info has been successfully edited')
+
+			return redirect('account:dashboard')
+		else:
+			return render(self.request, 'account/profile/edit_info.html', {'form': form})
 
 class UserDashboardView(LoginRequiredMixin, TemplateView):
 	template_name = 'account/profile/dashboard.html'

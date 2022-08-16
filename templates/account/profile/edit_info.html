@@ -1,8 +1,6 @@
 {% extends 'base.html' %}
-{% load static %}
-
 {% block title %}
-	checkout
+	edit
 {% endblock title %}
 
 {% block content %}
@@ -22,7 +20,7 @@
          				{% csrf_token %}
          				<div class="mb-4">
          					<label for="id_address">Address:</label>
-							<input value="{{ request.user.address }}" type="text" name="address" required="" id="id_address">
+							<input type="text" name="address" required="" id="id_address">
          				</div>
          				{% if form.address.errors %}
          				
@@ -33,7 +31,7 @@
          				
          				<div class="mb-4">
          					<label for="id_phone">Phone:</label>
-							<input value="{{ request.user.phone }}" type="text" name="phone" required="" id="id_phone">
+							<input type="text" name="phone" required="" id="id_phone">
          				</div>
          				{% if form.phone.errors %}
          				<div class="alert alert-danger mb-4" role="alert">
@@ -42,7 +40,7 @@
          				{% endif %}
 
          				<div class="d-grid">
-                			<button type="submit" class="btn btn-dark main-bg">checkout</button>
+                			<button type="submit" class="btn btn-dark main-bg">edit</button>
               			</div>
          			</form>
          		</div>
