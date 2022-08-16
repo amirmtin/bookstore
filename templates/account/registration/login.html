@@ -2,23 +2,63 @@
 {% block title %}
 	login
 {% endblock title %}
-{% block content %}
-	<div>
-		{{ form.errors }}
-	</div>
-	<form method="post">
-		{% csrf_token %}
-		<label for="id_username">Username:</label>
-		<input type="text" name="username" autofocus="" autocapitalize="none" autocomplete="username" maxlength="150" required="" id="id_username">
-		<br><br>
 
-		<label for="id_password">Password:</label>
-		<input type="password" name="password" autocomplete="current-password" required="" id="id_password">
-		<br><br>
-		<button class="btn btn-dark" type="submit">login</button>
-	</form>
-	<br>
-	<a href="{% url 'account:signup' %}">don't have an account?</a>
-	<br>
-	<a href="{% url 'account:reset' %}">forgot password?</a>
+{% block css %}
+	{{ block.super }}
+	<style type="text/css">
+		form {
+			justify-content: center !important;
+		}
+	</style>
+{% endblock css %}
+
+{% block content %}
+	<div class="row justify-content-center mt-5">
+		<div class="col-lg-4 col-md-6 col-sm-6">
+			<div class="card shadow">
+				<div class="card-title text-center border-bottom">
+            		<h2 class="p-3">Login</h2>
+         		</div>
+  				{% if form.non_field_errors %}
+  					<div class="alert alert-danger" role="alert">
+  						{{ form.non_field_errors }}
+					</div>
+  				{% endif %}
+         		<div class="card-body">
+         			<form method="post">
+         				{% csrf_token %}
+         				<div class="mb-4">
+         					<label for="id_username">
+         						Username:
+         					</label>
+							<input type="text" name="username" autofocus="" autocapitalize="none" autocomplete="username" maxlength="150" required="" id="id_username">
+         				</div>
+         				{% if form.username.errors %}
+         				<div class="alert alert-danger mb-4" role="alert">
+         					{{ form.username.errors }}
+         				</div>
+         				{% endif %}
+         				<div class="mb-4">
+         					<label for="id_password">Password:</label>
+							<input type="password" name="password" autocomplete="current-password" required="" id="id_password">
+         				</div>
+         				{% if form.password.errors %}
+         				<div class="alert alert-danger mb-4" role="alert">
+         					{{ form.password.error }}
+         				</div>
+         				{% endif %}
+         				<div class="mb-4">
+         					<a href="{% url 'account:signup' %}">don't have an account?</a>
+								<br>
+							<a href="{% url 'account:reset' %}">forgot password?</a>
+         				</div>
+         				
+         				<div class="d-grid">
+                			<button type="submit" class="btn btn-dark main-bg">Login</button>
+              			</div>
+         			</form>
+         		</div>
+			</div>
+		</div>
+	</div>
 {% endblock content %}

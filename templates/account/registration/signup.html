@@ -4,40 +4,98 @@
 {% endblock title %}
 
 {% block content %}
-    <div>
-        {{ form.errors }}
+    <div class="row justify-content-center mt-5">
+        <div class="col-lg-5 col-md-6 col-sm-6">
+            <div class="card shadow">
+                <div class="card-title text-center border-bottom">
+                    <h2 class="p-3">Sign up</h2>
+                </div>
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="mb-4">
+                            <label for="id_username">Username:</label>
+                            <input type="text" name="username" maxlength="150" autofocus="" required="" id="id_username">
+                        </div>
+
+                        {% if form.username.errors %}
+                        <div class="alert alert-danger mb-4" role="alert">
+                            {{ form.username.errors }}
+                        </div>
+                        {% endif %}
+
+                        <div class="mb-4">
+                            <span id="passwordHelpInline" class="form-text">
+                                Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. long.
+                            </span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_password1">Password:</label>
+                            <input type="password" name="password1" autocomplete="new-password" required="" id="id_password1">
+                        </div>
+
+                        {% if form.password1.errors %}
+                        <div class="alert alert-danger mb-4" role="alert">
+                            {{ form.password1.errors }}
+                        </div>
+                        {% endif %}
+
+                        <div class="mb-4">
+                            <span class="form-text">
+                                <ul>
+                                    <li>Your password can’t be too similar to your other personal information.</li>
+                                    <li>Your password must contain at least 8 characters.</li>
+                                    <li>Your password can’t be a commonly used password.</li>
+                                    <li>Your password can’t be entirely numeric.</li>
+                                 </ul>
+                            </span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_password2">Password confirmation:</label>
+                            <input type="password" name="password2" autocomplete="new-password" required="" id="id_password2">
+                        </div>
+
+                        {% if form.password2.errors %}
+                        <div class="alert alert-danger mb-4" role="alert">
+                            {{ form.password2.errors }}
+                        </div>
+                        {% endif %}
+                        
+                        <div class="mb-4">
+                            <span class="helptext form-text">
+                                Enter the same password as before, for verification.
+                            </span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_email">Email:</label>
+                            <input type="email" name="email" maxlength="254" required="" id="id_email">
+                        </div>
+
+                        {% if form.email.errors %}
+                        <div class="alert alert-danger mb-4" role="alert">
+                            {{ form.email.errors }}
+                        </div>
+                        {% endif %}
+
+                        <dv class="mb-4">
+                            <button class="btn btn-dark" type="submit">sign up</button>
+                        </dv>
+                        <div class="mb-4 mt-5">
+                            <a href="{% url 'account:login' %}">already have an account?</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-    <form method="post">
-        {% csrf_token %}
-        <label for="id_username">Username:</label>
-        <input type="text" name="username" maxlength="150" autofocus="" required="" id="id_username">
-        <br>
-        <span class="helptext">Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</span>
-        <br><br>
-
-        <label for="id_password1">Password:</label>
-        <input type="password" name="password1" autocomplete="new-password" required="" id="id_password1">
-        <br>
-        <ul>
-            <li>Your password can’t be too similar to your other personal information.</li>
-            <li>Your password must contain at least 8 characters.</li>
-            <li>Your password can’t be a commonly used password.</li>
-            <li>Your password can’t be entirely numeric.</li>
-        </ul>
-        <br><br>
-
-        <label for="id_password2">Password confirmation:</label>
-        <input type="password" name="password2" autocomplete="new-password" required="" id="id_password2">
-        <br>
-        <span class="helptext">Enter the same password as before, for verification.</span>
-        <br><br>
-
-        <label for="id_email">Email:</label>
-        <input type="email" name="email" maxlength="254" required="" id="id_email">
-        <br><br>
-
-        <button class="btn btn-dark" type="submit">sign up</button>
-    </form>
-    <br>
-    <a href="{% url 'account:login' %}">already have an account?</a>
+    </div>
 {% endblock content %}

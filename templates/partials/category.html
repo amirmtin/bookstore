@@ -1,40 +1,39 @@
-<div class="col-lg-12">
-    <nav class="navbar navbar-expand-md navbar-light bg-light">
-        <a class="navbar-brand pb-2" href="{% url 'store:list' %}">Book Store</a>
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-1">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'store:list' %}"><span class="m-2 bi bi-book"></span>Bookstore</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item active">
                     <a class="nav-link" href="{% url 'account:dashboard' %}">Dashboard</a>
                 </li>
-                {% for i in catg %}
-                    {% if not i.children.all %}
+                {% for category in categories %}
+                    {% if not category.children.all %}
                         <li class="nav-item">
-                            <a class="nav-link" href="?cat={{ i.slug }}">{{i.title}}</a>
+                            <a class="nav-link active" aria-current="page" href="?cat={{ category.slug }}">{{category.title}}</a>
                         </li>
                     {% else %}
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                {{i.title}} 
+                            <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{ category.title }}
                             </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                {% for obj in i.children.all %}
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                {% for obj in category.children.all %}
                                     {% if not obj.children.all %}
                                         <li>
-                                            <a class="dropdown-item" href="?cat={{ obj.slug }}">
-                                                {{obj.title}}
-                                            </a>
+                                            <a class="dropdown-item" href="?cat={{ obj.slug }}">{{ obj.title }}</a>
                                         </li>
                                     {% else %}
-                                        <li class="dropdown-submenu">
-                                            <a class="dropdown-item dropdown-toggle">
-                                                {{obj.title}}
+                                        <li>
+                                            <a class="dropdown-item">
+                                                {{ obj }} &raquo;
                                             </a>
-                                            <ul class="dropdown-menu">
+                                            <ul class="dropdown-menu dropdown-submenu">
                                                 {% for subobj in obj.children.all %}
                                                     <li>
-                                                        <a class="dropdown-item" href="?cat={{ subobj.slug }}">
-                                                            {{subobj.title}}
-                                                        </a>
+                                                        <a class="dropdown-item" href="?cat={{ subobj.slug }}">{{ subobj.title }}</a>
                                                     </li>
                                                 {% endfor %}
                                             </ul>
@@ -46,26 +45,20 @@
                     {% endif %}
                 {% endfor %}
             </ul>
-        </div>
-        <div>
-            <form method="get" action="{% url 'store:list' %}">
-                <div class="row">
-                    <div class="col">
-                        <input name='q' type="text">
-                    </div>
-                    <div class="col">
-                        <button class="btn btn-dark" type="submit">search</button>
-                    </div>
+
+
+            <form class="d-flex" method="get" action="{% url 'store:list' %}">
+                <input name="q" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-light" type="submit">Search</button>
+            </form> 
+            {% if request.user.is_authenticated %} 
+                <div>
+                    <a class="btn btn-outline-light" href="{% url 'store:cart' %}"><span class="bi bi-cart"></span></a>
                 </div>
-            </form>
-        </div>
-        <div>
-            {% if request.user.is_authenticated %}
-                <a class="btn btn-dark" href="{% url 'store:cart' %}">Go to cart</a>
             {% else %}
                 <a href="{% url 'account:login' %}">login</a>/
                 <a href="{% url 'account:signup' %}">signup</a>
-            {% endif %}
+            {% endif %}  
         </div>
-    </nav>
-</div>
+    </div>
+</nav>

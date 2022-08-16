@@ -9,7 +9,7 @@ from .forms import CheckOutForm
 class CategoryNav:
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['catg'] = Category.objects.filter(parent=None)
+		context['categories'] = Category.objects.filter(parent=None)
 		return context
 
 class BookListView(CategoryNav, ListView):

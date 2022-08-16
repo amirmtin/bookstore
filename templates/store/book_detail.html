@@ -4,40 +4,85 @@
 {% block css %}
 	{{ block.super }}
 	<link rel="stylesheet" type="text/css" href="{% static 'css/category.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/font.css' %}">
 {% endblock css %}
 
 {% block title %}
 	{{ book.title }}
 {% endblock title %}
 
-{% block content %}
+{% block navbar %}
 	{% include 'partials/category.html' with catg=catg %}
+{% endblock navbar %}
+
+{% block content %}
 	<div class="row">
 		<div class="col">
 			<img class="detail-img" src="{{ book.picture.url }}" alt="{{ book.title }}">
 		</div>
 		<div class="col">
-			{{ book.title }}
-			<br>
-			{{ book.publisher }}
-			<br>
-			{{ book.writer }}
-			<br>
-			{{ book.price }}
-			<br>
-			{{ book.category }}
-			<br>
-			{{ book.pages }}
-			<br>
-			{{ book.year }}
-			<br>
-			{{ book.edition }}
-			<br>
-			{{ book.description }}
-			<br>
-			<br>
+			<ul>
+				<li>
+					<span class="Pacifico">
+						Title : 
+					</span>
+					{{ book.title }}
+				</li>
+				<li>
+					<span class="Pacifico">
+						Publisher : 
+					</span>
+					{{ book.publisher }}
+				</li>
+				<li>
+					<span class="Pacifico">
+						Writer : 
+					</span>
+					{{ book.writer }}
+				</li>
+				<li>
+					<span class="Pacifico">
+						Price : 
+					</span>
+					{{ book.price }}
+				</li>
+				<li>
+					<span class="Pacifico">
+						Category : 
+					</span>
+					{{ book.category }}
+				</li>
+				<li>
+					<span class="Pacifico">
+						Pages : 
+					</span>
+					{{ book.pages }}
+				</li>
+				<li>
+					<span class="Pacifico">
+						Year : 
+					</span>
+					{{ book.year }}
+				</li>
+				<li>
+					<span class="Pacifico">
+						Edition : 
+					</span>
+					{{ book.edition }}
+				</li>
+				<li>
+					<span class="Pacifico">
+						Description : 
+					</span>
+					<br>
+					{{ book.description }}
+				</li>
+			</ul>
 			{% if request.user.is_verified %}
-				<button book="{{ book.slug }}" class="btn btn-primary" id="addBtn">add to cart</button>
+				<button book="{{ book.slug }}" class="btn btn-dark" id="addBtn">
+					<i class="bi bi-cart-plus"></i>
+					add to cart
+				</button>
 
 				<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
 				  <div class="modal-dialog">

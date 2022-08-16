@@ -1,4 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:ital@1&display=swap');
+
+body {
+	font-family: 'Work Sans', sans-serif;
+}
+
 .detail-img {
 	max-width: 50%;
 	max-height: 80%;
+}
+
+.pagination > li > a
+{
+    background-color: white;
+    color: #212529;
+}
+
+.pagination > li > a:focus,
+.pagination > li > a:hover,
+.pagination > li > span:focus,
+.pagination > li > span:hover
+{
+    color: #212529;
+    background-color: #eee;
+    border-color: #ddd;
+}
+
+.pagination > .active > a
+{
+    color: white;
+    background-color: #212529 !Important;
+    border: solid 1px #212529 !Important;
+}
+
+.pagination > .active > a:hover
+{
+    background-color: #212529 !Important;
+    border: solid 1px #212529;
 }

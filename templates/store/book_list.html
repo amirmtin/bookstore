@@ -4,30 +4,32 @@
 {% block css %}
 	{{ block.super }}
 	<link rel="stylesheet" type="text/css" href="{% static 'css/category.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/list.css' %}">
 {% endblock css %}
 
 {% block title %}
 	book list
 {% endblock title %}
 
-{% block content %}
+{% block navbar %}
 	{% include 'partials/category.html' with catg=catg %}
+{% endblock navbar %}
+
+{% block content %}
 	<div class="row">
 		{% for book in books %}
 			<div class="col">
 				<div class="card m-5" style="width: 18rem;">
   					<img src="{{ book.picture.url }}" class="card-img-top" alt="{{ book.title }}">
-  					<div class="card-body">
-    					<ul class="list-group list-group-flush">
-    						<li class="list-group-item"><strong>{{ book.title }}</strong></li>
-    						<li class="list-group-item">{{ book.publisher }}</li>
-    						<li class="list-group-item">{{ book.price }}$</li>
-  						</ul>
-    					<p class="card-text">
-    						<em>{{ book.description }}</em>
-    					</p>
-    					<a href="{% url 'store:detail' book.slug %}" class="btn btn-primary">see details</a>
-  					</div>
+        			<div class="content">
+            			<h3>
+            				{{ book.title }}
+            			</h3>
+            			<p>{{ book.description|truncatechars:9 }}</p>
+        			</div>
+        			<a href="{% url 'store:detail' book.slug %}" class="fixed-buttom btn btn-dark card-button m-4">
+        				see details
+        			</a>
 				</div>
 			</div>
 	{% endfor %}

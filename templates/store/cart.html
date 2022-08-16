@@ -5,23 +5,28 @@
 	cart
 {% endblock title %}
 
+{% block css %}
+	{{ block.super }}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/font.css' %}">
+{% endblock css %}
+
 {% block content %}
 	{% if orders %}
-		<div class="row">
+		<div class="row mt-2">
 			<div class="col">
-				<strong>book title</strong>
+				<strong class="Pacifico">book title</strong>
 			</div>
 			<div class="col">
-				<strong>quantity</strong>
+				<strong class="Pacifico">quantity</strong>
 			</div>
 			<div class="col">
-				<strong>book price</strong>
+				<strong class="Pacifico">book price</strong>
 			</div>
 			<div class="col">
-				<strong>total price</strong>
+				<strong class="Pacifico">total price</strong>
 			</div>
 			<div class="col">
-				<strong>actions</strong>
+				<strong class="Pacifico">actions</strong>
 			</div>
 		</div>
 		<br><br>
@@ -29,7 +34,9 @@
 	{% for order in orders %}
 		<div class="row">
 			<div class="col">
-				{{ order.book.title }}
+				<a href="{% url 'store:detail' order.book.slug %}">
+					{{ order.book.title }}
+				</a>
 			</div>
 			<div class="col">
 				{{ order.quantity }}
@@ -41,23 +48,36 @@
 				{{ order.get_total }}
 			</div>
 			<div class="col">
-				<button book="{{ order.book.slug }}" class="btn btn-primary increaseButton">+1</button>
-				<button book="{{ order.book.slug }}" class="btn btn-primary deleteButton">delete</button>
-				<button book="{{ order.book.slug }}" class="btn btn-primary decreaseButton">-1</button>
+				<button book="{{ order.book.slug }}" class="btn btn-dark increaseButton">
+					<i class="bi bi-cart-plus"></i>
+					+1
+				</button>
+				<button book="{{ order.book.slug }}" class="btn btn-dark deleteButton">
+					<i class="bi bi-cart-x"></i>
+					delete
+				</button>
+				<button book="{{ order.book.slug }}" class="btn btn-dark decreaseButton">
+					<i class="bi bi-cart-dash"></i>
+					-1
+				</button>
 			</div>
 		</div>
 		<hr>
 	{% empty %}
-		<h1>your cart is empty</h1>
-		<h2><a href="{% url 'store:list' %}">go shopping</a></h2>
+		<div class="m-5">
+			<h1>your cart is empty</h1>
+			<h2><a href="{% url 'store:list' %}">go shopping</a></h2>
+		</div>
 	{% endfor %}
 
 	{% if orders %}
-		<a href="{% url 'store:list' %}">continue shopping</a>
-		<br>
-		<h3>Total price : {{ orders.0.cart.get_cart_total }}</h3>
+		<div class="m-5">
+			<a href="{% url 'store:list' %}">continue shopping</a>
+			<br>
+			<h3>Total price : {{ orders.0.cart.get_cart_total }}</h3>
 
-		<a class="btn btn-primary" href="{% url 'store:checkout' %}">check out</a>
+			<a class="btn btn-dark" href="{% url 'store:checkout' %}">check out</a>
+		</div>
 	{% endif  %}
 {% endblock content %}
 
