@@ -3,14 +3,37 @@
 	Reset password
 {% endblock title %}
 {% block content %}
-	<div>
-		{{ form.errors }}
+	<div class="row justify-content-center mt-5">
+		<div class="col-lg-4 col-md-6 col-sm-6">
+			<div class="card shadow">
+				<div class="card-title text-center border-bottom">
+            		<h2 class="p-3">Login</h2>
+         		</div>
+
+         		{% if form.non_field_errors %}
+  					<div class="alert alert-danger" role="alert">
+  						{{ form.non_field_errors }}
+					</div>
+  				{% endif %}
+
+  				<div class="card-body">
+  					<form method="post">
+         				{% csrf_token %}
+         				<div class="mb-4">
+         					<label for="id_email">Email:</label>
+         					<input type="email" name="email" autocomplete="email" maxlength="254" required="" id="id_email">
+         				</div>
+
+         				{% if form.email.errors %}
+         				<div class="alert alert-danger mb-4" role="alert">
+         					{{ form.email.errors }}
+         				</div>
+         				{% endif %}
+
+         				<button class="btn btn-dark" type="submit">reset password</button>
+         			</form>
+  				</div>
+         	</div>
+         </div>
 	</div>
-	<form method="post">
-		{% csrf_token %}
-		<label for="id_email">Email:</label>
-		<input type="email" name="email" autocomplete="email" maxlength="254" required="" id="id_email">
-		<br><br>
-		<button class="btn btn-dark" type="submit">reset password</button>
-	</form>
 {% endblock content %}

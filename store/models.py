@@ -24,6 +24,10 @@ class Category(models.Model):
 	def get_parents(self):
 		count = 1  
 		parent = self.parent
+
+		if not parent:
+			return count
+
 		while 1:
 			parent = parent.parent
 			print(parent)
