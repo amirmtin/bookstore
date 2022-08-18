@@ -1,4 +1,4 @@
-from django.urls import path 
+from django.urls import path, include
 
 from . import views
 
@@ -25,4 +25,8 @@ urlpatterns = [
 		view=views.CheckOutView.as_view(),
 		name='checkout'
 		),
+	# path(
+	# 	route='api/',
+	# 	view=include('api.urls')
+	# ),
 ]

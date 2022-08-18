@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     # local
     'account',
     'store',
-    'api',
 ]
 
 MIDDLEWARE = [

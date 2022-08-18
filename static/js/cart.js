@@ -5,7 +5,6 @@ let decreaseButtons = document.getElementsByClassName('decreaseButton')
 for (i = 0; i < increaseButtons.length; i++) {
 	increaseButtons[i].addEventListener('click', (e) => {
 		let slug = e.target.getAttribute('book')
-		console.log(slug)
 
 		updateOrder(slug, +1)
 	})
