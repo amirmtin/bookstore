@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}
     email has been verified
 {% endblock title %}
@@ -8,5 +9,29 @@
             your email has been verified
         </h1>
     </div>
-    <a href="{% url 'account:login' %}">go to login page</a>
+    <p>
+        you will be redirected to main page in <span id="seconds">5</span> seconds.
+    </p>
 {% endblock content %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script type="text/javascript">
+
+        function redirect(i) {
+            setTimeout(function() {
+                let sec = document.getElementById('seconds')
+                let s = 5 - i
+                sec.innerText = s.toString()
+
+                if (s == 0) {
+                    window.location.replace('/')
+                }
+            }, i * 1000)
+        }
+
+        for(let i = 5; i >= 0;i--) {
+            redirect(i)
+        }
+    </script>
+{% endblock scripts %}

@@ -14,6 +14,7 @@ from django.contrib.auth.views import (LoginView,
 from braces.views import AnonymousRequiredMixin
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import authenticate, login
 
 from .forms import SignUpForm
 from .utils import send_verification_mail
@@ -117,6 +118,7 @@ class VerifyEmailView(View):
         if user is not None and account_activation_token.check_token(user, token):
             user.is_verified = True 
             user.save()
+            login(self.request, user)
             return render(request=self.request, template_name='account/registration/verified.html')
         else:
             return render(request=self.request, template_name='account/registration/invalid.html')
