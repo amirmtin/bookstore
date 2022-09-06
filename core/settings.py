@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     # packages
     'django_extensions',
     'rest_framework',
+    'azbankgateways',
 
     # local
     'account',
@@ -143,5 +144,24 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
+IDPAY_API_KEY = ''
 
 LOGIN_URL = 'account:login'
+
+AZ_IRANIAN_BANK_GATEWAYS = {
+   'GATEWAYS': {
+       'IDPAY': {
+           'MERCHANT_CODE': IDPAY_API_KEY,
+           'METHOD': 'POST',
+           'X_SANDBOX': 0,
+       },
+   },
+   'IS_SAMPLE_FORM_ENABLE': True,
+   'DEFAULT': 'IDPAY',
+   'CURRENCY': 'IRR',
+   'TRACKING_CODE_QUERY_PARAM': 'tc', 
+   'TRACKING_CODE_LENGTH': 16, 
+   'SETTING_VALUE_READER_CLASS': 'azbankgateways.readers.DefaultReader', 
+   'BANK_PRIORITIES': [
+   ], 
+}

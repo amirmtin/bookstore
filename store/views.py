@@ -2,6 +2,11 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
+from django.urls import reverse
+from azbankgateways import bankfactories, models as bank_models, default_settings as settings
+from azbankgateways.exceptions import AZBankGatewaysException
+from django.http import Http404
+from django.contrib import messages
 
 from .models import Category, Book, Cart, OrderItem
 from .forms import CheckOutForm
@@ -97,9 +102,52 @@ class CheckOutView(LoginRequiredMixin, FormView):
 
 			cart.address = address
 			cart.phone   = phone
-			cart.complete = True 
 			cart.save()
 
-			return render(self.request, 'store/order_complete.html')
+			amount = cart.get_cart_total
+			user_mobile_number = phone
+
+			factory = bankfactories.BankFactory()
+
+			try:
+				bank = factory.create()
+				bank.set_request(self.request)
+				bank.set_amount(amount)
+				bank.set_client_callback_url(reverse('store:callback-gateway'))
+				bank.set_mobile_number(user_mobile_number)
+				bank_record = bank.ready()
+				return bank.redirect_gateway()
+			except AZBankGatewaysException as e:
+				raise e
+
 		else:
 			return render(self.request, 'store/checkout.html', {'form': form})
+
+def callback_gateway_view(request):
+    tracking_code = request.GET.get(settings.TRACKING_CODE_QUERY_PARAM, None)
+    if not tracking_code:
+        raise Http404
+
+    try:
+        bank_record = bank_models.Bank.objects.get(tracking_code=tracking_code)
+    except bank_models.Bank.DoesNotExist:
+        raise Http404
+
+    if bank_record.is_success:
+    	user = request.user
+    	try:
+    		cart = Cart.objects.get(customer=user, complete=False)
+    	except Cart.DoesNotExist:
+    		return redirect('store:list')
+
+    	orders = OrderItem.objects.filter(cart=cart)
+
+    	if not orders.count():
+    		return redirect('store:list')
+
+    	cart.complete = True
+    	cart.save()
+    	return render(request, 'store/order_complete.html')
+
+    messages.add_message(request, messages.INFO, 'payment was not successfull')
+    return redirect('store:list')

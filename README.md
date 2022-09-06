@@ -12,7 +12,7 @@
 </h3>
   
   
-first add your gmail and password to *core/settings.py* lines 145 and 146
+first add your gmail, password and IDPAY API_TOKEN to *core/settings.py* lines 145 and 147
 
 
 ```console
