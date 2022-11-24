@@ -16,30 +16,44 @@
 {% endblock navbar %}
 
 {% block content %}
-	{% if messages %}
-	<ul class="messages">
-	    {% for message in messages %}
-	    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-	    {% endfor %}
-	</ul>
-	{% endif %}
+	<div class="row">
+		<div class="col">
+			{% if messages %}
+			<ul class="messages">
+				{% for message in messages %}
+				<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+				{% endfor %}
+			</ul>
+			{% endif %}
+		</div>
+	</div>
+		
+	
 	<div class="row">
 		{% for book in books %}
 			<div class="col">
-				<div class="card m-5" style="width: 18rem;">
+				<div class="card m-5" style="width: 18rem;height: 48rem;">
   					<img src="{{ book.picture.url }}" class="card-img-top" alt="{{ book.title }}">
         			<div class="content">
-            			<h3>
-            				{{ book.title }}
-            			</h3>
-            			<p>{{ book.description|truncatechars:9 }}</p>
+            			<h5>
+            				{{ book.title|truncatewords:3 }}
+            			</h5>
+            			<small>{{ book.description|truncatewords:10 }}</small>
+                        <p class="">{{ book.rating_average }} <i class="bi bi-star-fill"></i> 
+							<br>
+							<small>
+								{{ book.review_count }} reviews
+							</small>
+						</p>
         			</div>
         			<a href="{% url 'store:detail' book.slug %}" class="fixed-buttom btn btn-dark card-button m-4">
         				see details
         			</a>
 				</div>
 			</div>
+            {% empty %}
+                <h4>No book found</h4>
 	{% endfor %}
 	</div>
-	{% include 'partials/pagination.html' with page=page %}
+	{% include 'partials/pagination.html' %}
 {% endblock content %}

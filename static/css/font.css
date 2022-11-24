@@ -1,5 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+@font-face {
+   font-family: patrick;
+   src: url(PatrickHand-Regular.ttf);
+}
 
-.Pacifico {
-    font-family: 'Pacifico', cursive;
+.detail-item {
+    font-family: patrick, cursive;
 }

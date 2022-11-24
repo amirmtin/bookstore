@@ -37,14 +37,3 @@ amirmtin@linuxmint:~$ python manage.py migrate
 amirmtin@linuxmint:~$ python manage.py runserver
 
 ```
-  
-<h2 align="center"> 
-    screen shots
-</h2>
-
-<img src="./screenshot/Workspace 1_001.png"> 
-<br><br><br><br>
-<img src="./screenshot/Workspace 1_002.png">
-<br><br><br><br>
-<img src="./screenshot/Workspace 1_003.png">
-

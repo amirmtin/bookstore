@@ -1,49 +1,23 @@
 from django.db import models
-from django.core.exceptions import ValidationError
 from django_extensions.db.fields import AutoSlugField
+from django.db.models import UniqueConstraint
 
 from account.models import CustomUser
+from .fields import IntegerRangeField
+
 
 class Category(models.Model):
-	parent  = models.ForeignKey('self', 
-				related_name='children', 
-				on_delete=models.CASCADE, 
-				null=True, 
-				blank=True)
 	title   = models.CharField(max_length=50)
 	slug    = AutoSlugField(populate_from='title', unique=True, null=False, editable=False)
 	created = models.DateTimeField(auto_now_add=True)
 
 	class Meta:
-		unique_together = ('slug', 'parent',)
+		unique_together = ('slug', )
 		verbose_name_plural = "categories"
 
 	def __str__(self):
 		return self.title
 
-	def get_parents(self):
-		count = 1  
-		parent = self.parent
-
-		if not parent:
-			return count
-
-		while 1:
-			parent = parent.parent
-			print(parent)
-			if parent:
-				count += 1
-			else:
-				break
-
-		return count
-
-	def clean(self):
-		super(Category, self).clean()
-
-		parents = self.get_parents()
-		if parents > 2:
-			raise ValidationError('Each category can have a maximum of 2 parents')
 
 class Book(models.Model):
 	category    = models.ForeignKey(Category, on_delete=models.CASCADE, null=False, blank=False)
@@ -61,6 +35,18 @@ class Book(models.Model):
 
 	def __str__(self):
 		return self.title
+
+	class Meta:
+		ordering = ('created', )
+
+	@property
+	def rating_average(self):
+		return self.rating.aggregate(models.Avg('rating')).get('rating__avg') or 0
+
+	@property
+	def review_count(self):
+		return self.rating.count()
+
 
 class Cart(models.Model):
 	customer     = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
@@ -84,9 +70,10 @@ class Cart(models.Model):
 		total = sum([item.quantity for item in orderitems])
 		return total
 
+
 class OrderItem(models.Model):
-	book = models.ForeignKey(Book, on_delete=models.SET_NULL, null=True)
-	cart = models.ForeignKey(Cart, on_delete=models.SET_NULL, null=True)
+	book = models.ForeignKey(Book, on_delete=models.CASCADE, null=True)
+	cart = models.ForeignKey(Cart, on_delete=models.CASCADE, null=True)
 	quantity = models.IntegerField(default=0)
 
 	def __str__(self):
@@ -96,3 +83,17 @@ class OrderItem(models.Model):
 	def get_total(self):
 		total = self.book.price * self.quantity
 		return total
+
+
+class Rating(models.Model):
+	book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='rating')
+	user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+	rating = IntegerRangeField(min_value=1, max_value=5, default=2)
+
+	def __str__(self):
+		return f"{self.book} : {self.rating}"
+
+	class Meta:
+		constraints = [
+			UniqueConstraint(fields=['user', 'book'], name='rating_once')
+		]

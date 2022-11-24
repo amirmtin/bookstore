@@ -1,4 +1,6 @@
 env/
+.venv/
+.idea/
 migrations/
 __pycache__/
 media/

@@ -6,8 +6,13 @@ app_name = 'api'
 
 urlpatterns = [
 	path(
-		route='cart',
-		view=api.add_to_cart,
+		route='cart/',
+		view=api.CartApiView.as_view(),
 		name='add_to_cart'
 	),
+	path(
+		route='rate/',
+		view=api.RateApiView.as_view(),
+		name='rating'
+		),
 ]

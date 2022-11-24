@@ -7,15 +7,17 @@ from azbankgateways import bankfactories, models as bank_models, default_setting
 from azbankgateways.exceptions import AZBankGatewaysException
 from django.http import Http404
 from django.contrib import messages
+from django.db.models import Avg
 
-from .models import Category, Book, Cart, OrderItem
+from .models import Category, Book, Cart, OrderItem, Rating
 from .forms import CheckOutForm
 
 class CategoryNav:
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['categories'] = Category.objects.filter(parent=None)
+		context['categories'] = Category.objects.all()
 		return context
+
 
 class BookListView(CategoryNav, ListView):
 	model = Book
@@ -23,7 +25,7 @@ class BookListView(CategoryNav, ListView):
 	paginate_by = 3
 
 	def get_queryset(self):
-		books    = super().get_queryset()
+		books = super().get_queryset().annotate(avg_rating=Avg('rating__rating')).order_by('-avg_rating')
 		category = self.request.GET.get('cat')
 
 		if category:
@@ -38,12 +40,14 @@ class BookListView(CategoryNav, ListView):
 					Q(publisher__icontains=query) |
 					Q(writer__icontains=query)
 				)
-
+		print(books)
 		return books
+
 
 class BookDetailView(CategoryNav, DetailView):
 	model = Book 
 	context_object_name = 'book'
+
 
 class CartView(LoginRequiredMixin, ListView):
 	template_name = 'store/cart.html'
@@ -54,6 +58,7 @@ class CartView(LoginRequiredMixin, ListView):
 		orders = OrderItem.objects.filter(cart=cart).select_related('book')
 
 		return orders
+
 
 class CheckOutView(LoginRequiredMixin, FormView):
 	template_name = 'store/checkout.html'
@@ -87,7 +92,6 @@ class CheckOutView(LoginRequiredMixin, FormView):
 			cart = Cart.objects.get(customer=user, complete=False)
 		except Cart.DoesNotExist:
 			return redirect('store:list')
-
 
 		orders = OrderItem.objects.filter(cart=cart)
 		
@@ -123,31 +127,32 @@ class CheckOutView(LoginRequiredMixin, FormView):
 		else:
 			return render(self.request, 'store/checkout.html', {'form': form})
 
+
 def callback_gateway_view(request):
-    tracking_code = request.GET.get(settings.TRACKING_CODE_QUERY_PARAM, None)
-    if not tracking_code:
-        raise Http404
+	tracking_code = request.GET.get(settings.TRACKING_CODE_QUERY_PARAM, None)
+	if not tracking_code:
+		raise Http404
 
-    try:
-        bank_record = bank_models.Bank.objects.get(tracking_code=tracking_code)
-    except bank_models.Bank.DoesNotExist:
-        raise Http404
+	try:
+		bank_record = bank_models.Bank.objects.get(tracking_code=tracking_code)
+	except bank_models.Bank.DoesNotExist:
+		raise Http404
 
-    if bank_record.is_success:
-    	user = request.user
-    	try:
-    		cart = Cart.objects.get(customer=user, complete=False)
-    	except Cart.DoesNotExist:
-    		return redirect('store:list')
+	if bank_record.is_success:
+		user = request.user
+		try:
+			cart = Cart.objects.get(customer=user, complete=False)
+		except Cart.DoesNotExist:
+			return redirect('store:list')
 
-    	orders = OrderItem.objects.filter(cart=cart)
+		orders = OrderItem.objects.filter(cart=cart)
 
-    	if not orders.count():
-    		return redirect('store:list')
+		if not orders.count():
+			return redirect('store:list')
 
-    	cart.complete = True
-    	cart.save()
-    	return render(request, 'store/order_complete.html')
+		cart.complete = True
+		cart.save()
+		return render(request, 'store/order_complete.html')
 
-    messages.add_message(request, messages.INFO, 'payment was not successfull')
-    return redirect('store:list')
+	messages.add_message(request, messages.INFO, 'payment was not successfull')
+	return redirect('store:list')

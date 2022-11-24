@@ -14,19 +14,19 @@
 	{% if orders %}
 		<div class="row mt-2">
 			<div class="col">
-				<strong class="Pacifico">book title</strong>
+				<strong class="detail-item">book title</strong>
 			</div>
 			<div class="col">
-				<strong class="Pacifico">quantity</strong>
+				<strong class="detail-item">quantity</strong>
 			</div>
 			<div class="col">
-				<strong class="Pacifico">book price</strong>
+				<strong class="detail-item">book price</strong>
 			</div>
 			<div class="col">
-				<strong class="Pacifico">total price</strong>
+				<strong class="detail-item">total price</strong>
 			</div>
 			<div class="col">
-				<strong class="Pacifico">actions</strong>
+				<strong class="detail-item">actions</strong>
 			</div>
 		</div>
 		<br><br>
@@ -48,15 +48,15 @@
 				{{ order.get_total }}
 			</div>
 			<div class="col">
-				<button book="{{ order.book.slug }}" class="btn btn-dark increaseButton">
+				<button type="submit" data-book="{{ order.book.slug }}" class="btn btn-dark increaseButton">
 					<i class="bi bi-cart-plus"></i>
 					+1
 				</button>
-				<button book="{{ order.book.slug }}" class="btn btn-dark deleteButton">
+				<button type="submit" data-book="{{ order.book.slug }}" class="btn btn-dark deleteButton">
 					<i class="bi bi-cart-x"></i>
 					delete
 				</button>
-				<button book="{{ order.book.slug }}" class="btn btn-dark decreaseButton">
+				<button type="submit" data-book="{{ order.book.slug }}" class="btn btn-dark decreaseButton">
 					<i class="bi bi-cart-dash"></i>
 					-1
 				</button>

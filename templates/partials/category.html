@@ -10,39 +10,9 @@
                     <a class="nav-link" href="{% url 'account:dashboard' %}">Dashboard</a>
                 </li>
                 {% for category in categories %}
-                    {% if not category.children.all %}
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="?cat={{ category.slug }}">{{category.title}}</a>
-                        </li>
-                    {% else %}
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                {{ category.title }}
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                {% for obj in category.children.all %}
-                                    {% if not obj.children.all %}
-                                        <li>
-                                            <a class="dropdown-item" href="?cat={{ obj.slug }}">{{ obj.title }}</a>
-                                        </li>
-                                    {% else %}
-                                        <li>
-                                            <a class="dropdown-item">
-                                                {{ obj }} &raquo;
-                                            </a>
-                                            <ul class="dropdown-menu dropdown-submenu">
-                                                {% for subobj in obj.children.all %}
-                                                    <li>
-                                                        <a class="dropdown-item" href="?cat={{ subobj.slug }}">{{ subobj.title }}</a>
-                                                    </li>
-                                                {% endfor %}
-                                            </ul>
-                                        </li>
-                                    {% endif %}
-                                {% endfor %}
-                            </ul>
-                        </li>
-                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/?cat={{ category.slug }}">{{category.title}}</a>
+                    </li>
                 {% endfor %}
             </ul>
 
