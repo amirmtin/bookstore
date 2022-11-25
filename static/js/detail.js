@@ -54,7 +54,7 @@ submitBtn.addEventListener('click', (e) => {
 		body: JSON.stringify(body)
 	})
 	.then(response => {
-		if (response.status == 200) {
+		if (response.status === 200) {
 			submitBtn.innerText = 'Submitted!!'
 			submitBtn.disabled = true
 			setTimeout(() => {

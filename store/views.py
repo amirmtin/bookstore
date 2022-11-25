@@ -1,16 +1,17 @@
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Q
 from django.urls import reverse
 from azbankgateways import bankfactories, models as bank_models, default_settings as settings
 from azbankgateways.exceptions import AZBankGatewaysException
 from django.http import Http404
 from django.contrib import messages
 from django.db.models import Avg
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 
-from .models import Category, Book, Cart, OrderItem, Rating
+from .models import Category, Book, Cart, OrderItem
 from .forms import CheckOutForm
+
 
 class CategoryNav:
 	def get_context_data(self, **kwargs):
@@ -34,13 +35,10 @@ class BookListView(CategoryNav, ListView):
 		query = self.request.GET.get('q')
 
 		if query:
-			books = books.filter(
-					Q(title__icontains=query) |
-					Q(description__icontains=query) |
-					Q(publisher__icontains=query) |
-					Q(writer__icontains=query)
-				)
-		print(books)
+			vector = SearchVector('title', 'description', 'publisher', 'writer')
+			query = SearchQuery(query)
+			books.annotate(rank=SearchRank(vector, query)).order_by('-rank')
+
 		return books
 
 

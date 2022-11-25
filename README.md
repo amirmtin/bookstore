@@ -1,39 +1,48 @@
-<h1 align="center"> 
-  bookstore site
-</h1>
+# bookstore site
 
 <img src="https://static.djangoproject.com/img/icon-touch.e4872c4da341.png">
-<img src="https://getbootstrap.com/docs/5.0/assets/img/favicons/apple-touch-icon.png">
-<h3 align="center"> 
-   bookstore website developed with django and bootstrap
-</h3>
-<h3 align="center"> 
-    run locally
-</h3>
-  
-  
-first add your gmail, password and IDPAY API_TOKEN to *core/settings.py* lines 145 and 147
 
+### prerequisite :
+- python 3.8
+- postresql
 
-```console
-# clone repository
-amirmtin@linuxmint:~$ git clone https://github.com/amirmtin/bookstore
-amirmtin@linuxmint:~$ cd bookstore
+## run localy
 
-# create virtualenv
-amirmtin@linuxmint:~$ python -m virtualenv env
-
-# active env
-amirmtin@linuxmint:~$ source env/bin/activate
-
-# install packages
-amirmtin@linuxmint:~$ pip install -r requirements.txt
-
-# create database
-amirmtin@linuxmint:~$ python manage.py makemigrations
-amirmtin@linuxmint:~$ python manage.py migrate
-
-# run
-amirmtin@linuxmint:~$ python manage.py runserver
-
+1. create environment variables
+    - SECRET_KEY
+    - DB_NAME
+    - DB_USER
+    - DB_HOST
+    - DB_PORT
+    - DB_PASSWORD
+    - EMAIL_HOST_USER
+    - EMAIL_HOST_PASSWORD
+    - IDPAY_API_KEY
+2. clone repository
+```
+git clone https://github.com/amirmtin/bookstore
+cd bookstore
+```
+3. create virtualenv and activate
+```
+python -m virtualenv env
+   
+# in linux and mac 
+source env/bin/activate
+   
+# in windows
+./env/Scripts/activate
+```
+4. install packages 
+```
+pip install -r requirements.txt
+```
+5. setup database
+```
+python manage.py makemigrations
+python manage.py migrate
+```
+6. run server
+```
+python manage.py runserver
 ```
