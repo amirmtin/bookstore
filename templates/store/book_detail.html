@@ -19,120 +19,140 @@
 {% block content %}
 	<div class="row">
 		<div class="col">
-			<img class="detail-img" src="{{ book.picture.url }}" alt="{{ book.title }}">
+			<img class="detail-img img-fluid" src="{{ book.picture.url }}" alt="{{ book.title }}">
 		</div>
 		<div class="col">
-			<ul>
-				<li>
-					<span class="detail-item">
-						Title : 
-					</span>
-					<div id="bookTitle">
-						{{ book.title }}
-					</div>
-				</li>
-				<li>
-					<span class="detail-item">
-						Publisher : 
-					</span>
-					{{ book.publisher }}
-				</li>
-				<li>
-					<span class="detail-item">
-						Writer : 
-					</span>
-					{{ book.writer }}
-				</li>
-				<li>
-					<span class="detail-item">
-						Price : 
-					</span>
-					{{ book.price }}
-				</li>
-				<li>
-					<span class="detail-item">
-						Category : 
-					</span>
-					{{ book.category }}
-				</li>
-				<li>
-					<span class="detail-item">
-						Pages : 
-					</span>
-					{{ book.pages }}
-				</li>
-				<li>
-					<span class="detail-item">
-						Year : 
-					</span>
-					{{ book.year }}
-				</li>
-				<li>
-					<span class="detail-item">
-						Edition : 
-					</span>
-					{{ book.edition }}
-				</li>
-				<li>
-					<span class="detail-item">
-						Description : 
-					</span>
-					<br>
-					{{ book.description }}
-				</li>
-			</ul>
-			{% if request.user.is_verified %}
-                <div class="row m-3 p-3 border border-1 border-secondary">
-                    <div class="rate">
-                        <input class="rateRadio" type="radio" id="star5" name="rate" value="5" />
-                        <label for="star5" title="text">5 stars</label>
-                        <input class="rateRadio" type="radio" id="star4" name="rate" value="4" />
-                        <label for="star4" title="text">4 stars</label>
-                        <input class="rateRadio" type="radio" id="star3" name="rate" value="3" />
-                        <label for="star3" title="text">3 stars</label>
-                        <input class="rateRadio" type="radio" id="star2" name="rate" value="2" />
-                        <label for="star2" title="text">2 stars</label>
-                        <input class="rateRadio" type="radio" id="star1" name="rate" value="1" />
-                        <label for="star1" title="text">1 star</label>
+            <h1 id="bookTitle m-3 p-3">
+			    {{ book.title }}
+            </h1>
+
+            <span class="detail-item">
+                By
+            </span>
+
+            <a href="/?author={{ book.author.slug }}">
+                {{ book.author }}
+            </a>
+            <div class="p-3 m-3">
+                {% if request.user.is_verified %}
+                    <div class="row m-3 p-3 border border-1 border-secondary">
+                        <div class="rate">
+                            <input class="rateRadio" type="radio" id="star5" name="rate" value="5" />
+                            <label for="star5" title="text">5 stars</label>
+                            <input class="rateRadio" type="radio" id="star4" name="rate" value="4" />
+                            <label for="star4" title="text">4 stars</label>
+                            <input class="rateRadio" type="radio" id="star3" name="rate" value="3" />
+                            <label for="star3" title="text">3 stars</label>
+                            <input class="rateRadio" type="radio" id="star2" name="rate" value="2" />
+                            <label for="star2" title="text">2 stars</label>
+                            <input class="rateRadio" type="radio" id="star1" name="rate" value="1" />
+                            <label for="star1" title="text">1 star</label>
+                          </div>
+
+                        <button id="submitRate">Submit Rate</button>
+                    </div>
+
+                    <button book="{{ book.slug }}" class="btn btn-dark" id="addBtn">
+                        <i class="bi bi-cart-plus"></i>
+                        add to cart
+                    </button>
+
+                    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="ModalLabel">successfull</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            <em>{{ book.title }}</em> is added to your card
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <a href="{% url 'store:cart' %}" class="btn btn-dark">go to cart</a>
+                          </div>
+                        </div>
                       </div>
+                    </div>
 
-                    <button id="submitRate">Submit Rate</button>
-                </div>
-
-				<button book="{{ book.slug }}" class="btn btn-dark" id="addBtn">
-					<i class="bi bi-cart-plus"></i>
-					add to cart
-				</button>
-
-				<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
-				  <div class="modal-dialog">
-				    <div class="modal-content">
-				      <div class="modal-header">
-				        <h5 class="modal-title" id="ModalLabel">successfull</h5>
-				        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				      </div>
-				      <div class="modal-body">
-				        <em>{{ book.title }}</em> is added to your card
-				      </div>
-				      <div class="modal-footer">
-				        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-				        <a href="{% url 'store:cart' %}" class="btn btn-dark">go to cart</a>
-				      </div>
-				    </div>
-				  </div>
-				</div>
-
-			{% elif request.user.is_authenticated %}
-				<a href="{% url 'account:send_email' %}">activate your email</a> to add book to your cart
-			{% else %}
-				<a href="{% url 'account:login' %}">login</a>
-				/
-				<a href="{% url 'account:signup' %}">signup</a>
-				to add book to your cart
-			{% endif %}
+                {% elif request.user.is_authenticated %}
+                    <a href="{% url 'account:send_email' %}">activate your email</a> to add book to your cart
+                {% else %}
+                    <a href="{% url 'account:login' %}">login</a>
+                    /
+                    <a href="{% url 'account:signup' %}">signup</a>
+                    to add book to your cart
+                {% endif %}
+            </div>
 		</div>
 	</div>
 
+    <div>
+        <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab" aria-controls="info" aria-selected="true">Info</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="author-tab" data-bs-toggle="tab" data-bs-target="#author" type="button" role="tab" aria-controls="author" aria-selected="false">About author</button>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="info" role="tabpanel" aria-labelledby="info-tab">
+                <div class="p-5 m-3">
+                    <ul>
+                        <li>
+                            <span class="detail-item">
+                                Author :
+                            </span>
+                            {{ book.author }}
+                        </li>
+                        <li>
+                            <span class="detail-item">
+                                Price :
+                            </span>
+                            {{ book.price }}
+                        </li>
+                        <li>
+                            <span class="detail-item">
+                                Category :
+                            </span>
+                            {{ book.category }}
+                        </li>
+                        <li>
+                            <span class="detail-item">
+                                Pages :
+                            </span>
+                            {{ book.pages }}
+                        </li>
+                        <li>
+                            <span class="detail-item">
+                                Year :
+                            </span>
+                            {{ book.year }}
+                        </li>
+                        <li>
+                            <span class="detail-item">
+                                Edition :
+                            </span>
+                            {{ book.edition }}
+                        </li>
+                        <li>
+                            <span class="detail-item">
+                                Description :
+                            </span>
+                            <br>
+                            {{ book.description }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="author" role="tabpanel" aria-labelledby="auhtor-tab">
+                <span class="p-5 m-3">
+                    {{ book.author.about }}
+                </span>
+            </div>
+        </div>
+    </div>
 {% endblock content %}
 
 {% block scripts %}

@@ -16,12 +16,16 @@
 {% endblock navbar %}
 
 {% block content %}
-	<div class="row">
+	<div class="row p-3 m-3">
 		<div class="col">
 			{% if messages %}
 			<ul class="messages">
 				{% for message in messages %}
-				<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+				<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                    <h2>
+                         {{ message }}
+                    </h2>
+                </li>
 				{% endfor %}
 			</ul>
 			{% endif %}

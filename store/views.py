@@ -9,148 +9,162 @@ from django.contrib import messages
 from django.db.models import Avg
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 
-from .models import Category, Book, Cart, OrderItem
+from .models import Category, Book, Cart, OrderItem, Author
 from .forms import CheckOutForm
 
 
 class CategoryNav:
-	def get_context_data(self, **kwargs):
-		context = super().get_context_data(**kwargs)
-		context['categories'] = Category.objects.all()
-		return context
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()
+        return context
 
 
 class BookListView(CategoryNav, ListView):
-	model = Book
-	context_object_name = 'books'
-	paginate_by = 3
+    model = Book
+    context_object_name = 'books'
+    paginate_by = 3
 
-	def get_queryset(self):
-		books = super().get_queryset().annotate(avg_rating=Avg('rating__rating')).order_by('-avg_rating')
-		category = self.request.GET.get('cat')
+    def get_queryset(self):
+        books = super().get_queryset().annotate(avg_rating=Avg('rating__rating')).order_by('-avg_rating')
+        category = self.request.GET.get('cat')
 
-		if category:
-			books = books.filter(category__slug=category)
+        if category:
+            messages.add_message(self.request, messages.INFO, f'Books in {category} category')
+            books = books.filter(category__slug=category)
 
-		query = self.request.GET.get('q')
+        query = self.request.GET.get('q')
 
-		if query:
-			vector = SearchVector('title', 'description', 'publisher', 'writer')
-			query = SearchQuery(query)
-			books.annotate(rank=SearchRank(vector, query)).order_by('-rank')
+        if query:
+            messages.add_message(self.request, messages.INFO, f'you searched for {query}')
+            vector = SearchVector('title', 'description', 'publisher', 'author__name')
+            query = SearchQuery(query)
+            books.annotate(rank=SearchRank(vector, query)).order_by('-rank')
 
-		return books
+        author = self.request.GET.get('author')
+        print(author)
+
+        if author:
+            try:
+                author = Author.objects.get(slug=author)
+                books.filter(author=author)
+                messages.add_message(self.request, messages.INFO, f'Books from {author.name}')
+            except:
+                books.none()
+
+        return books
 
 
 class BookDetailView(CategoryNav, DetailView):
-	model = Book 
-	context_object_name = 'book'
+    model = Book
+    context_object_name = 'book'
+    queryset = Book.objects.all().select_related('author')
 
 
 class CartView(LoginRequiredMixin, ListView):
-	template_name = 'store/cart.html'
-	context_object_name = 'orders'
-	
-	def get_queryset(self):
-		cart, created = Cart.objects.get_or_create(customer=self.request.user, complete=False)
-		orders = OrderItem.objects.filter(cart=cart).select_related('book')
+    template_name = 'store/cart.html'
+    context_object_name = 'orders'
 
-		return orders
+    def get_queryset(self):
+        cart, created = Cart.objects.get_or_create(customer=self.request.user, complete=False)
+        orders = OrderItem.objects.filter(cart=cart).select_related('book')
+
+        return orders
 
 
 class CheckOutView(LoginRequiredMixin, FormView):
-	template_name = 'store/checkout.html'
-	form_class = CheckOutForm 
+    template_name = 'store/checkout.html'
+    form_class = CheckOutForm
 
-	def get(self, *args, **kwargs):
-		user = self.request.user 
+    def get(self, *args, **kwargs):
+        user = self.request.user
 
-		if not user.is_verified:
-			return redirect('account:send_email')
+        if not user.is_verified:
+            return redirect('account:send_email')
 
-		try:
-			cart = Cart.objects.get(customer=user, complete=False)
-		except Cart.DoesNotExist:
-			return redirect('store:list')
+        try:
+            cart = Cart.objects.get(customer=user, complete=False)
+        except Cart.DoesNotExist:
+            return redirect('store:list')
 
-		orders = OrderItem.objects.filter(cart=cart)
+        orders = OrderItem.objects.filter(cart=cart)
 
-		if not orders.count():
-			return redirect('store:list')
+        if not orders.count():
+            return redirect('store:list')
 
-		return super(CheckOutView, self).get(self, self.request)
+        return super(CheckOutView, self).get(self, self.request)
 
-	def post(self, *args, **kwargs):
-		user = self.request.user 
+    def post(self, *args, **kwargs):
+        user = self.request.user
 
-		if not user.is_verified:
-			return redirect('account:send_email')
+        if not user.is_verified:
+            return redirect('account:send_email')
 
-		try:
-			cart = Cart.objects.get(customer=user, complete=False)
-		except Cart.DoesNotExist:
-			return redirect('store:list')
+        try:
+            cart = Cart.objects.get(customer=user, complete=False)
+        except Cart.DoesNotExist:
+            return redirect('store:list')
 
-		orders = OrderItem.objects.filter(cart=cart)
-		
-		if not orders.count():
-			return redirect('store:list')
+        orders = OrderItem.objects.filter(cart=cart)
 
-		form = CheckOutForm(self.request.POST) 
+        if not orders.count():
+            return redirect('store:list')
 
-		if form.is_valid():
-			address = form.cleaned_data.get('address')
-			phone   = form.cleaned_data.get('phone')
+        form = CheckOutForm(self.request.POST)
 
-			cart.address = address
-			cart.phone   = phone
-			cart.save()
+        if form.is_valid():
+            address = form.cleaned_data.get('address')
+            phone = form.cleaned_data.get('phone')
 
-			amount = cart.get_cart_total
-			user_mobile_number = phone
+            cart.address = address
+            cart.phone = phone
+            cart.save()
 
-			factory = bankfactories.BankFactory()
+            amount = cart.get_cart_total
+            user_mobile_number = phone
 
-			try:
-				bank = factory.create()
-				bank.set_request(self.request)
-				bank.set_amount(amount)
-				bank.set_client_callback_url(reverse('store:callback-gateway'))
-				bank.set_mobile_number(user_mobile_number)
-				bank_record = bank.ready()
-				return bank.redirect_gateway()
-			except AZBankGatewaysException as e:
-				raise e
+            factory = bankfactories.BankFactory()
 
-		else:
-			return render(self.request, 'store/checkout.html', {'form': form})
+            try:
+                bank = factory.create()
+                bank.set_request(self.request)
+                bank.set_amount(amount)
+                bank.set_client_callback_url(reverse('store:callback-gateway'))
+                bank.set_mobile_number(user_mobile_number)
+                bank_record = bank.ready()
+                return bank.redirect_gateway()
+            except AZBankGatewaysException as e:
+                raise e
+
+        else:
+            return render(self.request, 'store/checkout.html', {'form': form})
 
 
 def callback_gateway_view(request):
-	tracking_code = request.GET.get(settings.TRACKING_CODE_QUERY_PARAM, None)
-	if not tracking_code:
-		raise Http404
+    tracking_code = request.GET.get(settings.TRACKING_CODE_QUERY_PARAM, None)
+    if not tracking_code:
+        raise Http404
 
-	try:
-		bank_record = bank_models.Bank.objects.get(tracking_code=tracking_code)
-	except bank_models.Bank.DoesNotExist:
-		raise Http404
+    try:
+        bank_record = bank_models.Bank.objects.get(tracking_code=tracking_code)
+    except bank_models.Bank.DoesNotExist:
+        raise Http404
 
-	if bank_record.is_success:
-		user = request.user
-		try:
-			cart = Cart.objects.get(customer=user, complete=False)
-		except Cart.DoesNotExist:
-			return redirect('store:list')
+    if bank_record.is_success:
+        user = request.user
+        try:
+            cart = Cart.objects.get(customer=user, complete=False)
+        except Cart.DoesNotExist:
+            return redirect('store:list')
 
-		orders = OrderItem.objects.filter(cart=cart)
+        orders = OrderItem.objects.filter(cart=cart)
 
-		if not orders.count():
-			return redirect('store:list')
+        if not orders.count():
+            return redirect('store:list')
 
-		cart.complete = True
-		cart.save()
-		return render(request, 'store/order_complete.html')
+        cart.complete = True
+        cart.save()
+        return render(request, 'store/order_complete.html')
 
-	messages.add_message(request, messages.INFO, 'payment was not successfull')
-	return redirect('store:list')
+    messages.add_message(request, messages.INFO, 'payment was not successfull')
+    return redirect('store:list')
